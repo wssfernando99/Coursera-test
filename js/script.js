@@ -40,12 +40,24 @@ var showLoading = function (selector) {
 
 // Return substitute of '{{propName}}'
 // with propValue in given 'string'
+// var insertProperty = function (string, propName, propValue) {
+//   var propToReplace = "{{" + propName + "}}";
+//   string = string
+//     .replace(new RegExp(propToReplace, "g"), propValue);
+//   return string;
+// };
 var insertProperty = function (string, propName, propValue) {
   var propToReplace = "{{" + propName + "}}";
-  string = string
-    .replace(new RegExp(propToReplace, "g"), propValue);
+
+  // Handle the `{{randomCategoryShortName}}` syntax specifically
+  if (propName === "randomCategoryShortName") {
+    propValue = "'" + propValue + "'"; // Surround the chosen category short name with quotes
+  }
+
+  string = string.replace(new RegExp(propToReplace, "g"), propValue);
   return string;
 };
+
 
 // Remove the class 'active' from home and switch to Menu button
 var switchMenuToActive = function () {
