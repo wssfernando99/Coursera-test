@@ -15,13 +15,15 @@ var dc = {};
 
 var homeHtmlUrl = "snippets/home-snippet.html";
 var allCategoriesUrl =
-  "https://coursera-jhu-default-rtdb.firebaseio.com/categories.json";
+  "https://davids-restaurant.herokuapp.com/categories.json";
 var categoriesTitleHtml = "snippets/categories-title-snippet.html";
 var categoryHtml = "snippets/category-snippet.html";
 var menuItemsUrl =
-  "https://coursera-jhu-default-rtdb.firebaseio.com/menu_items/";
+  "https://davids-restaurant.herokuapp.com/menu_items.json?category=";
 var menuItemsTitleHtml = "snippets/menu-items-title.html";
 var menuItemHtml = "snippets/menu-item.html";
+// Inserting about html to the folder
+var aboutHtmlUrl = "snippets/about.html"; 
 
 // Convenience function for inserting innerHTML for 'select'
 var insertHtml = function (selector, html) {
@@ -81,12 +83,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
 // *** start ***
 // On first load, show home view
 showLoading("#main-content");
-  $ajaxUtils.sendGetRequest(
-    allCategoriesUrl,
-    buildAndShowHomeHTML, // ***** <---- TODO: STEP 1: Substitute [...] ******
-
-    
-true); // Explicitly setting the flag to get JSON from server processed into an object literal
+$ajaxUtils.sendGetRequest(
+  allCategoriesUrl,
+  buildAndShowHomeHTML, // ***** <---- TODO: STEP 1: Substitute [...] ******
+  true); // Explicitly setting the flag to get JSON from server processed into an object literal
 });
 // *** finish **
 
@@ -103,9 +103,7 @@ function buildAndShowHomeHTML (categories) {
       // TODO: STEP 2: Here, call chooseRandomCategory, passing it retrieved 'categories'
       // Pay attention to what type of data that function returns vs what the chosenCategoryShortName
       // variable's name implies it expects.
-      // var chosenCategoryShortName = ....
-      var chosenCategory = chooseRandomCategory(categories);
-      var chosenCategoryShortName = chosenCategory.shortName;
+      var chosenCategoryShortName = chooseRandomCategory(categories).short_name;
 
 
       // TODO: STEP 3: Substitute {{randomCategoryShortName}} in the home html snippet with the
@@ -119,16 +117,15 @@ function buildAndShowHomeHTML (categories) {
       // Hint: you need to surround the chosen category short name with something before inserting
       // it into the home html snippet.
       //
-      // var homeHtmlToInsertIntoMainPage = ....
-      var homeHtmlToInsertIntoMainPage = insertProperty(homeHtml, "randomCategoryShortName", "'" + chosenCategoryShortName + "'");
+      chosenCategoryShortName = "'" + chosenCategoryShortName + "'";
+      var homeHtmlToInsertIntoMainPage = insertProperty(homeHtml, "randomCategoryShortName", chosenCategoryShortName);
 
 
-      // TODO: STEP 4: Insert the produced HTML in STEP 3 into the main page
+      // TODO: STEP 4: Insert the the produced HTML in STEP 3 into the main page
       // Use the existing insertHtml function for that purpose. Look through this code for an example
       // of how to do that.
       // ....
       insertHtml("#main-content", homeHtmlToInsertIntoMainPage);
-
     },
     false); // False here because we are getting just regular HTML from the server, so no need to process JSON.
 }
@@ -143,6 +140,69 @@ function chooseRandomCategory (categories) {
   return categories[randomArrayIndex];
 }
 
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Load the about rating view
+dc.loadAboutRatings = function () {
+  showLoading("#main-content");
+  $ajaxUtils.sendGetRequest(
+    aboutHtmlUrl, 
+    buildAndShowAboutHTML, 
+    false);
+};
+
+function buildAndShowAboutHTML (aboutHtml) {
+    var finalHtml = aboutHtml;
+    var i = getRandomInt(1, 5);
+    var starFilled = "fas fa-star";
+    var starUnFilled = "fas fa-star-o";
+    if (i === 1) {
+      aboutHtml = insertProperty(aboutHtml, "starValue1", starFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue2", starUnFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue3", starUnFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue4", starUnFilled);
+      var aboutHtmlToInsertIntoMainPage = insertProperty(aboutHtml, "starValue5", starUnFilled);
+    }
+
+    if (i === 2) {
+      aboutHtml = insertProperty(aboutHtml, "starValue1", starFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue2", starFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue3", starUnFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue4", starUnFilled);
+      var aboutHtmlToInsertIntoMainPage = insertProperty(aboutHtml, "starValue5", starUnFilled);
+    }
+
+    if (i === 3) {
+      aboutHtml = insertProperty(aboutHtml, "starValue1", starFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue2", starFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue3", starFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue4", starUnFilled);
+      var aboutHtmlToInsertIntoMainPage = insertProperty(aboutHtml, "starValue5", starUnFilled);
+    }
+
+    if (i === 4) {
+      aboutHtml = insertProperty(aboutHtml, "starValue1", starFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue2", starFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue3", starFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue4", starFilled);
+      var aboutHtmlToInsertIntoMainPage = insertProperty(aboutHtml, "starValue5", starUnFilled);
+    }
+
+    if (i === 5) {
+      aboutHtml = insertProperty(aboutHtml, "starValue1", starFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue2", starFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue3", starFilled);
+      aboutHtml = insertProperty(aboutHtml, "starValue4", starFilled);
+      var aboutHtmlToInsertIntoMainPage = insertProperty(aboutHtml, "starValue5", starFilled);
+    }
+
+
+    insertHtml("#main-content", aboutHtmlToInsertIntoMainPage);
+}
 
 // Load the menu categories view
 dc.loadMenuCategories = function () {
@@ -158,7 +218,7 @@ dc.loadMenuCategories = function () {
 dc.loadMenuItems = function (categoryShort) {
   showLoading("#main-content");
   $ajaxUtils.sendGetRequest(
-    menuItemsUrl + categoryShort + ".json",
+    menuItemsUrl + categoryShort,
     buildAndShowMenuItemsHTML);
 };
 
